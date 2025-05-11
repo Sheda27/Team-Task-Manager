@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "145595303591",
+    "project_id": "ttm-app-sheda",
+    "storage_bucket": "ttm-app-sheda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145595303591:android:e70b0fe46f84cb5c36fd82",
+        "android_client_info": {
+          "package_name": "com.example.team_task_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsAZKq4tBH5F_iokC_jj5TjmPo4cjDEt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
