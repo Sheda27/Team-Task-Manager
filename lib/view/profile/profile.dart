@@ -1,84 +1,55 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:team_task_manager/view/index.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class Profile extends StatelessWidget {
+  final String id = FirebaseAuth.instance.currentUser!.uid;
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-// void getUserData() {
-//   final user = FirebaseAuth.instance.currentUser;
-//   if (user != null) {
-//     // Name, email address, and profile photo URL
-//     final name = user.displayName;
-//     final email = user.email;
-//     // final photoUrl = user.photoURL;
-
-//     // Check if user's email is verified
-//     // final emailVerified = user.emailVerified;
-
-//     // The user's ID, unique to the Firebase project. Do NOT use this value to
-//     // authenticate with your backend server, if you have one. Use
-//     // User.getIdToken() instead.
-//     final uid = user.uid;
-//   }
-// }
-
-class _ProfilePageState extends State<ProfilePage> {
-  @override
-  void initState() {
-    // getUserData();
-    super.initState();
+  Future<Map<String, dynamic>> getUserData() async {
+    DocumentSnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection('Users').doc(id).get();
+    return documentSnapshot.data() as Map<String, dynamic>;
   }
+
+  Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Profile'), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                // backgroundImage: AssetImage(
-                //   'assets/images/profile_placeholder.png',
-                // ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Name:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text("name", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
-            Text(
-              'Email:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text('johndoe@example.com', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
-            Text(
-              'Phone:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text('+123 456 7890', style: TextStyle(fontSize: 16)),
-            Spacer(),
-            Center(
-              child: ElevatedButton(
+      appBar: AppBar(title: Text("Profiile")),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: getUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(backgroundColor: touchesColor),
+            );
+          }
+          if (!snapshot.hasData || snapshot.hasError) {
+            return Center(child: Text("Error"));
+          }
+          final userData = snapshot.data!;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 16),
+              CircleAvatar(backgroundColor: touchesColor, radius: 50),
+              SizedBox(height: 16),
+              TextButton(
                 onPressed: () {
-                  // Add logout functionality here
+                  Clipboard.setData(ClipboardData(text: id));
+                  Get.snackbar(
+                    "Copied",
+                    "User ID has been copied to clipboard",
+                  );
                 },
-                child: Text('Logout'),
+                child: Text("ID : $id"),
               ),
-            ),
-          ],
-        ),
+              SizedBox(height: 16),
+              ListTile(title: Text(userData['user_name'])),
+              SizedBox(height: 16),
+              ListTile(title: Text(userData['user_email'])),
+            ],
+          );
+        },
       ),
     );
   }

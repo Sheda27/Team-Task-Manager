@@ -33,11 +33,7 @@ class _MembersState extends State<Members> {
               return Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: ListTile(
-                  title: Text(
-                    member.data().containsKey('member_name')
-                        ? member['member_name']
-                        : 'Unknown',
-                  ),
+                  title: Text(member['members_name'] ?? 'Unknown'),
                   subtitle: Text(member['role'] ?? "no role"),
                   onTap: () {
                     //navigate to member task page

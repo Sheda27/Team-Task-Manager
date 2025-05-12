@@ -18,20 +18,20 @@ Drawer buildDrawer(BuildContext context) {
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
 
-          leading: const Icon(Icons.note, color: Colors.white),
+          leading: const Icon(Icons.home, color: Colors.white),
           title: Text(
             'HOME',
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           onTap: () {
             // Handle navigation to All Notes
-            Get.toNamed('/');
+            Get.toNamed('/teams');
             log("all notes------------------------------------------");
           },
         ),
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
-          leading: const Icon(Icons.category, color: Colors.white),
+          leading: const Icon(Icons.person, color: Colors.white),
           title: Text(
             'profile',
             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -42,34 +42,34 @@ Drawer buildDrawer(BuildContext context) {
             log("add notes------------------------------------------");
           },
         ),
-        ListTile(
-          tileColor: Color.fromRGBO(222, 166, 122, 0),
-          leading: const Icon(Icons.task_alt, color: Colors.white),
-          title: Text(
-            'To Do List',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
-          onTap: () {
-            // Handle navigation to Add Note
-            Get.toNamed('/');
-            log("add notes------------------------------------------");
-          },
-        ),
+        // ListTile(
+        //   tileColor: Color.fromRGBO(222, 166, 122, 0),
+        //   leading: const Icon(Icons.task_alt, color: Colors.white),
+        //   title: Text(
+        //     'To Do List',
+        //     style: TextStyle(color: Colors.white, fontSize: 18),
+        //   ),
+        //   onTap: () {
+        //     // Handle navigation to Add Note
+        //     Get.toNamed('/');
+        //     log("add notes------------------------------------------");
+        //   },
+        // ),
 
-        ListTile(
-          tileColor: Color.fromRGBO(222, 166, 122, 0),
+        // ListTile(
+        //   tileColor: Color.fromRGBO(222, 166, 122, 0),
 
-          leading: const Icon(Icons.list, color: Colors.white),
-          title: Text(
-            'completed todo',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
-          onTap: () {
-            // Handle navigation to Settings
-            Get.toNamed('/');
-            log("completed todo------------------------------------------");
-          },
-        ),
+        //   leading: const Icon(Icons.list, color: Colors.white),
+        //   title: Text(
+        //     'completed todo',
+        //     style: TextStyle(color: Colors.white, fontSize: 18),
+        //   ),
+        //   onTap: () {
+        //     // Handle navigation to Settings
+        //     Get.toNamed('/');
+        //     log("completed todo------------------------------------------");
+        //   },
+        // ),
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
 

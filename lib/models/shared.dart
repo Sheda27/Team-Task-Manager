@@ -12,22 +12,24 @@ class AppTheme {
       elevation: 5,
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: secoderyColor,
+      backgroundColor: mainColor,
+      foregroundColor: touchesColor,
     ),
-    scaffoldBackgroundColor: touchesColor,
+    scaffoldBackgroundColor: secoderyColor,
     textTheme: TextTheme(
       bodyLarge: TextStyle(color: touchesColor),
       bodyMedium: TextStyle(color: touchesColor),
       bodySmall: TextStyle(color: touchesColor),
     ),
     listTileTheme: ListTileThemeData(
-      tileColor: thirdColor.withAlpha(150),
+      tileColor: mainColor.withAlpha(100),
       titleTextStyle: TextStyle(
-        color: mainColor,
+        color: touchesColor,
         fontWeight: FontWeight.bold,
         fontSize: 18,
       ),
-      subtitleTextStyle: TextStyle(color: mainColor),
+      subtitleTextStyle: TextStyle(color: touchesColor),
+      iconColor: touchesColor,
     ),
     buttonTheme: ButtonThemeData(
       buttonColor: Colors.blue,

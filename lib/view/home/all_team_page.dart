@@ -17,8 +17,6 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
     return Scaffold(
       drawer: buildDrawer(context),
       appBar: AppBar(
-        foregroundColor: touchesColor,
-
         centerTitle: true,
         title: const Text('Teams', style: TextStyle(fontSize: 30)),
       ),
@@ -41,7 +39,9 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
-                  child: CircularProgressIndicator(backgroundColor: mainColor),
+                  child: CircularProgressIndicator(
+                    backgroundColor: touchesColor,
+                  ),
                 );
               }
               final teams = snapshot.data!.docs;
@@ -53,69 +53,70 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 3.0),
-                      child: ListTile(
-                        title: Text("${teams[index]['title']}"),
-                        subtitle: Text("${teams[index]['createdAt']}"),
-                        trailing: IconButton(
-                          onPressed: () {
-                            // final String currentUser =
-                            //     FirebaseAuth.instance.currentUser!.uid;
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: ListTile(
+                          title: Text("${teams[index]['title']}"),
+                          // subtitle: Text("${teams[index]['members_list']}"),
+                          trailing: IconButton(
+                            onPressed: () {
+                              // final String currentUser =
+                              //     FirebaseAuth.instance.currentUser!.uid;
 
-                            Get.defaultDialog(
-                              title: "Alert",
-                              content: Text("What you want to do??"),
-                              textConfirm: 'Edit',
-                              onConfirm: () {
-                                // if (teams[index]['createdBy'] == currentUser) {
-                                Get.to(
-                                  EditTeam(
-                                    id: teams[index].id,
-                                    title: teams[index]['title'],
-                                    describe: teams[index]['description'],
-                                  ),
-                                );
-                                // } else {
-                                Get.defaultDialog(
-                                  title: "Sorry",
-                                  content: Text(
-                                    "Only Team Leader can Edit Team",
-                                  ),
-                                );
-                                // }
-                              },
-                              cancel: ElevatedButton(
-                                onPressed: () {
-                                  // if (teams[index]['createdBy'] ==
-                                  //     currentUser) {
-                                  team
-                                      .doc(teams[index].id)
-                                      .delete()
-                                      .then((value) => log("Team deleted"))
-                                      .catchError(
-                                        (error) =>
-                                            log("Failed to add user: $error"),
-                                      );
-                                  // } else {
-                                  Get.defaultDialog(
-                                    title: "Sorry",
-                                    content: Text(
-                                      "Only Team Leader can Delete Team",
+                              Get.defaultDialog(
+                                title: "Alert",
+                                content: Text("What you want to do??"),
+                                textConfirm: 'Edit',
+                                onConfirm: () {
+                                  // if (teams[index]['createdBy'] == currentUser) {
+                                  Get.to(
+                                    EditTeam(
+                                      id: teams[index].id,
+                                      title: teams[index]['title'],
+                                      describe: teams[index]['description'],
                                     ),
                                   );
+                                  // } else {
+                                  // Get.defaultDialog(
+                                  //   title: "Sorry",
+                                  //   content: Text(
+                                  //     "Only Team Leader can Edit Team",
+                                  //   ),
+                                  // );
                                   // }
                                 },
-                                child: Text("Delete"),
-                              ),
-                              textCancel: 'Delete',
-                              onCancel: () {},
-                            );
-                          },
+                                cancel: ElevatedButton(
+                                  onPressed: () {
+                                    // if (teams[index]['createdBy'] ==
+                                    //     currentUser) {
+                                    team
+                                        .doc(teams[index].id)
+                                        .delete()
+                                        .then((value) => log("Team deleted"))
+                                        .catchError(
+                                          (error) =>
+                                              log("Failed to add user: $error"),
+                                        );
+                                    // } else {
+                                    // Get.defaultDialog(
+                                    //   title: "Sorry",
+                                    //   content: Text(
+                                    //     "Only Team Leader can Delete Team",
+                                    //   ),
+                                    // );
+                                    // }
+                                  },
+                                  child: Text("Delete"),
+                                ),
+                              );
+                            },
 
-                          icon: Icon(Icons.more_vert),
+                            icon: Icon(Icons.more_vert),
+                          ),
+                          onTap: () {
+                            Get.to(() => Members(teamID: teams[index].id));
+                          },
                         ),
-                        onTap: () {
-                          Get.to(() => Members(teamID: teams[index].id));
-                        },
                       ),
                     );
                   },

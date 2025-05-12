@@ -19,13 +19,18 @@ class AddTaskPage extends StatelessWidget {
         'description': _descriptionController.text, // John Doe
         'createdBy': user.uid, // Stokes and Sons
         'members_list': FieldValue.arrayUnion([user.uid]),
+        'members_name': user.displayName,
         'createdAt': FieldValue.serverTimestamp(), // Stokes and Sons
       });
 
       await teamRef
           .collection("members")
           .doc(user.uid)
-          .set({'role': 'leader', 'joinedAt': FieldValue.serverTimestamp()})
+          .set({
+            'role': 'leader',
+            'joinedAt': FieldValue.serverTimestamp(),
+            'members_name': user.displayName,
+          })
           .then((value) => log("team Added"));
     } catch (error) {
       log("Failed to add user: $error");
@@ -36,13 +41,7 @@ class AddTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secoderyColor,
-      appBar: AppBar(
-        title: Text('Add Team'),
-        backgroundColor: thirdColor,
-        elevation: 2,
-        foregroundColor: touchesColor,
-      ),
+      appBar: AppBar(title: Text('Add Team')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -109,7 +108,6 @@ class AddTaskPage extends StatelessWidget {
             Get.snackbar("", "Team added successfully!");
           }
         },
-        backgroundColor: thirdColor,
         child: Icon(Icons.done),
       ),
     );

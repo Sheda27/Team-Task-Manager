@@ -34,37 +34,57 @@ class _EditTaskState extends State<EditTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Task")),
+      appBar: AppBar(title: Text("Edit Task")),
       body: Form(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TextField(
-              controller: _taskTitle,
-              decoration: InputDecoration(label: Text("Task Title")),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: TextFormField(
+                  controller: _taskTitle,
+                  decoration: InputDecoration(
+                    label: Text("Task Title"),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
             ),
-            TextField(
-              controller: _taskDescription,
-              decoration: InputDecoration(label: Text("Description")),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: TextFormField(
+                  controller: _taskDescription,
+                  decoration: InputDecoration(
+                    label: Text("Description"),
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await FirebaseFirestore.instance
-                    .collection('teams')
-                    .doc(widget.teamId)
-                    .collection('members')
-                    .doc(widget.userId)
-                    .collection('tasks')
-                    .doc(widget.taskId)
-                    .set({
-                      'task_title': _taskTitle.text,
-                      'task_describe': _taskDescription.text,
-                      'state': '',
-                      'createdAt': FieldValue.serverTimestamp(),
-                    });
-                Get.back();
-              },
-              child: Text("Add"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: customButton(
+                onPressed: () async {
+                  await FirebaseFirestore.instance
+                      .collection('teams')
+                      .doc(widget.teamId)
+                      .collection('members')
+                      .doc(widget.userId)
+                      .collection('tasks')
+                      .doc(widget.taskId)
+                      .set({
+                        'task_title': _taskTitle.text,
+                        'task_describe': _taskDescription.text,
+                        'state': '',
+                        'createdAt': FieldValue.serverTimestamp(),
+                      });
+                  Get.back();
+                },
+                buttonText: 'Done',
+              ),
             ),
           ],
         ),

@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: ' app demo',
       themeMode: ThemeMode.light,
       theme:
           AppTheme()
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: '/teams', page: () => AllTeamsPage()),
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),
-        GetPage(name: '/profile', page: () => ProfilePage()),
+        GetPage(name: '/profile', page: () => Profile()),
         GetPage(name: '/add_team', page: () => AddTaskPage()),
         GetPage(name: '/wait', page: () => WaitingVerify()),
       ],

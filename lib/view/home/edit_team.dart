@@ -52,46 +52,53 @@ class _EditTeamState extends State<EditTeam> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add Task')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                // key: _formKey,
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: 'Task Title',
-                  border: OutlineInputBorder(),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: TextFormField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: 'Task Title',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                // key: _formKey,
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Task Description',
-                  border: OutlineInputBorder(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: TextFormField(
+                  // key: _formKey,
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Task Description',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
                 ),
-                maxLines: 4,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: customButton(
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // Handle task submission logic here
                     final title = _titleController.text;
@@ -114,10 +121,10 @@ class _EditTeamState extends State<EditTeam> {
                     );
                   }
                 },
-                child: Text('Add Task'),
+                buttonText: 'Add Task',
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

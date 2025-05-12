@@ -11,10 +11,10 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secoderyColor,
+      backgroundColor: mainColor,
       appBar: AppBar(
         title: Text('Sign Up'),
-        backgroundColor: secoderyColor,
+        backgroundColor: mainColor,
         elevation: 0,
       ),
       body: Padding(
@@ -22,7 +22,7 @@ class SignUpPage extends StatelessWidget {
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
@@ -35,6 +35,14 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
               ),
+
+              SizedBox(height: 4),
+              SizedBox(
+                height: 130,
+                width: 200,
+                child: Image(image: AssetImage("images/add-account.png")),
+              ),
+
               SizedBox(height: 30),
               Card(
                 child: TextFormField(
@@ -104,6 +112,7 @@ class SignUpPage extends StatelessWidget {
                           'user_name': _userNameController.text,
                           'user_email': _emailController.text,
                           'user_role': 'member',
+                          'ownerId': FirebaseAuth.instance.currentUser!.uid,
                           'createdAt': FieldValue.serverTimestamp(),
                         });
                     Get.defaultDialog(
@@ -134,7 +143,7 @@ class SignUpPage extends StatelessWidget {
                     child: Text(
                       ' Login',
                       style: TextStyle(
-                        color: mainColor,
+                        color: Colors.grey[50],
                         fontWeight: FontWeight.bold,
                       ),
                     ),

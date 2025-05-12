@@ -37,7 +37,7 @@ class _TasksPageState extends State<TasksPage> {
                 padding: const EdgeInsets.only(top: 3),
                 child: ListTile(
                   title: Text(task["task_title"]),
-                  subtitle: Text("${task['createdAt']}"),
+                  subtitle: Text("${task['state']}"),
                   trailing: IconButton(
                     onPressed: () {
                       Get.defaultDialog(
@@ -74,6 +74,71 @@ class _TasksPageState extends State<TasksPage> {
                     },
                     icon: Icon(Icons.more_vert),
                   ),
+                  onTap: () {
+                    Get.defaultDialog(
+                      title: "Choose Task State",
+                      content: Column(
+                        children: [
+                          ListTile(
+                            title: Text(notStartedYet),
+                            onTap: () {
+                              FirebaseFirestore.instance
+                                  .collection('teams')
+                                  .doc(widget.teamId)
+                                  .collection('members')
+                                  .doc(widget.memberId)
+                                  .collection('tasks')
+                                  .doc(task.id)
+                                  .update({'state': notStartedYet});
+                              Get.back();
+                            },
+                          ),
+                          ListTile(
+                            title: Text(inProgress),
+                            onTap: () {
+                              FirebaseFirestore.instance
+                                  .collection('teams')
+                                  .doc(widget.teamId)
+                                  .collection('members')
+                                  .doc(widget.memberId)
+                                  .collection('tasks')
+                                  .doc(task.id)
+                                  .update({'state': inProgress});
+                              Get.back();
+                            },
+                          ),
+                          ListTile(
+                            title: Text(pending),
+                            onTap: () {
+                              FirebaseFirestore.instance
+                                  .collection('teams')
+                                  .doc(widget.teamId)
+                                  .collection('members')
+                                  .doc(widget.memberId)
+                                  .collection('tasks')
+                                  .doc(task.id)
+                                  .update({'state': pending});
+                              Get.back();
+                            },
+                          ),
+                          ListTile(
+                            title: Text(blocked),
+                            onTap: () {
+                              FirebaseFirestore.instance
+                                  .collection('teams')
+                                  .doc(widget.teamId)
+                                  .collection('members')
+                                  .doc(widget.memberId)
+                                  .collection('tasks')
+                                  .doc(task.id)
+                                  .update({'state': blocked});
+                              Get.back();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               );
             },
@@ -89,3 +154,8 @@ class _TasksPageState extends State<TasksPage> {
     );
   }
 }
+
+const String notStartedYet = "Not Started Yet";
+const String inProgress = "in Progress";
+const String pending = "Pending";
+const String blocked = "Blocked";

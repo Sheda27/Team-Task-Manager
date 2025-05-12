@@ -25,6 +25,7 @@ Future signInWithGoogle() async {
       'user_name': user.displayName,
       'user_email': user.email,
       'user_role': 'member',
+      'ownerId': user.uid,
       'creatdAt': FieldValue.serverTimestamp(),
     });
   }
@@ -40,12 +41,12 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secoderyColor,
-      appBar: AppBar(
-        title: Text('Login'),
-        backgroundColor: secoderyColor,
-        elevation: 0,
-      ),
+      backgroundColor: mainColor,
+      // appBar: AppBar(
+      //   title: Text('Login'),
+      //   backgroundColor: mai,
+      //   elevation: 0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -56,7 +57,7 @@ class LoginPage extends StatelessWidget {
             children: [
               SizedBox(
                 child: Text(
-                  "Welcome",
+                  "Welcome...",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -64,6 +65,13 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              SizedBox(
+                height: 200,
+                width: 200,
+                child: Image(image: AssetImage("images/sign-in.png")),
+              ),
+
               SizedBox(height: 30),
               Card(
                 child: TextField(
@@ -135,7 +143,7 @@ class LoginPage extends StatelessWidget {
                     child: Text(
                       ' Sign up',
                       style: TextStyle(
-                        color: mainColor,
+                        color: Colors.grey[50],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
