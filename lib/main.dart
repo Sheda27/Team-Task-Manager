@@ -32,26 +32,34 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: ' app demo',
-      themeMode: ThemeMode.light,
-      theme:
-          AppTheme()
-              .lightTheme, // Replace with your desired ThemeData configuration
-      initialRoute:
-          FirebaseAuth.instance.currentUser != null &&
-                  FirebaseAuth.instance.currentUser!.emailVerified
-              ? '/teams'
-              : '/login',
-      getPages: [
-        GetPage(name: '/teams', page: () => AllTeamsPage()),
-        GetPage(name: '/login', page: () => LoginPage()),
-        GetPage(name: '/sign-up', page: () => SignUpPage()),
-        GetPage(name: '/profile', page: () => Profile()),
-        GetPage(name: '/add_team', page: () => AddTaskPage()),
-        GetPage(name: '/wait', page: () => WaitingVerify()),
-      ],
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // Use builder only if you need to use library outside ScreenUtilInit context
+      builder: (_, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: ' app demo',
+          themeMode: ThemeMode.light,
+          theme:
+              AppTheme()
+                  .lightTheme, // Replace with your desired ThemeData configuration
+          initialRoute:
+              FirebaseAuth.instance.currentUser != null &&
+                      FirebaseAuth.instance.currentUser!.emailVerified
+                  ? '/teams'
+                  : '/login',
+          getPages: [
+            GetPage(name: '/teams', page: () => AllTeamsPage()),
+            GetPage(name: '/login', page: () => LoginPage()),
+            GetPage(name: '/sign-up', page: () => SignUpPage()),
+            GetPage(name: '/profile', page: () => Profile()),
+            GetPage(name: '/add_team', page: () => AddTaskPage()),
+            GetPage(name: '/wait', page: () => WaitingVerify()),
+          ],
+        );
+      },
     );
   }
 }

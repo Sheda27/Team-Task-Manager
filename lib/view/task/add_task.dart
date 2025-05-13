@@ -19,7 +19,7 @@ class AddTask extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   controller: taskTitle,
@@ -37,7 +37,7 @@ class AddTask extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   controller: taskDescription,
@@ -56,7 +56,7 @@ class AddTask extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: customButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {

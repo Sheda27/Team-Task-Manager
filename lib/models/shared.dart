@@ -26,7 +26,7 @@ class AppTheme {
       titleTextStyle: TextStyle(
         color: touchesColor,
         fontWeight: FontWeight.bold,
-        fontSize: 18,
+        fontSize: 18.sp,
       ),
       subtitleTextStyle: TextStyle(color: touchesColor),
       iconColor: touchesColor,
@@ -73,7 +73,7 @@ Widget customButton({
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(buttonText, style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(width: 10),
+        SizedBox(width: 10.w),
       ],
     ),
   );

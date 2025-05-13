@@ -3,7 +3,13 @@ import 'package:team_task_manager/view/index.dart';
 class TasksPage extends StatefulWidget {
   final String teamId;
   final String memberId;
-  const TasksPage({super.key, required this.teamId, required this.memberId});
+  final String taskOwner;
+  const TasksPage({
+    super.key,
+    required this.teamId,
+    required this.memberId,
+    required this.taskOwner,
+  });
 
   @override
   State<TasksPage> createState() => _TasksPageState();
@@ -14,7 +20,7 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Task")),
+      appBar: AppBar(title: Text(widget.taskOwner)),
       body: StreamBuilder(
         stream:
             FirebaseFirestore.instance
@@ -25,16 +31,18 @@ class _TasksPageState extends State<TasksPage> {
                 .collection('tasks')
                 .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
           final tasks = snapshot.data!.docs;
+
           return ListView.builder(
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final task = tasks[index];
+
               return Padding(
-                padding: const EdgeInsets.only(top: 3),
+                padding: EdgeInsets.only(top: 3).r,
                 child: ListTile(
                   title: Text(task["task_title"]),
                   subtitle: Text("${task['state']}"),
@@ -82,57 +90,93 @@ class _TasksPageState extends State<TasksPage> {
                           ListTile(
                             title: Text(notStartedYet),
                             onTap: () {
-                              FirebaseFirestore.instance
-                                  .collection('teams')
-                                  .doc(widget.teamId)
-                                  .collection('members')
-                                  .doc(widget.memberId)
-                                  .collection('tasks')
-                                  .doc(task.id)
-                                  .update({'state': notStartedYet});
-                              Get.back();
+                              if (current == widget.memberId) {
+                                FirebaseFirestore.instance
+                                    .collection('teams')
+                                    .doc(widget.teamId)
+                                    .collection('members')
+                                    .doc(widget.memberId)
+                                    .collection('tasks')
+                                    .doc(task.id)
+                                    .update({'state': notStartedYet});
+                                Get.back();
+                              } else {
+                                Get.defaultDialog(
+                                  title: "Sorry",
+                                  content: Text(
+                                    "Only ${widget.taskOwner} can set the tasks state",
+                                  ),
+                                );
+                              }
                             },
                           ),
                           ListTile(
                             title: Text(inProgress),
                             onTap: () {
-                              FirebaseFirestore.instance
-                                  .collection('teams')
-                                  .doc(widget.teamId)
-                                  .collection('members')
-                                  .doc(widget.memberId)
-                                  .collection('tasks')
-                                  .doc(task.id)
-                                  .update({'state': inProgress});
-                              Get.back();
+                              if (current == widget.memberId) {
+                                FirebaseFirestore.instance
+                                    .collection('teams')
+                                    .doc(widget.teamId)
+                                    .collection('members')
+                                    .doc(widget.memberId)
+                                    .collection('tasks')
+                                    .doc(task.id)
+                                    .update({'state': inProgress});
+                                Get.back();
+                              } else {
+                                Get.defaultDialog(
+                                  title: "Sorry",
+                                  content: Text(
+                                    "Only ${widget.taskOwner} can set the tasks state",
+                                  ),
+                                );
+                              }
                             },
                           ),
                           ListTile(
                             title: Text(pending),
                             onTap: () {
-                              FirebaseFirestore.instance
-                                  .collection('teams')
-                                  .doc(widget.teamId)
-                                  .collection('members')
-                                  .doc(widget.memberId)
-                                  .collection('tasks')
-                                  .doc(task.id)
-                                  .update({'state': pending});
-                              Get.back();
+                              if (current == widget.memberId) {
+                                FirebaseFirestore.instance
+                                    .collection('teams')
+                                    .doc(widget.teamId)
+                                    .collection('members')
+                                    .doc(widget.memberId)
+                                    .collection('tasks')
+                                    .doc(task.id)
+                                    .update({'state': pending});
+                                Get.back();
+                              } else {
+                                Get.defaultDialog(
+                                  title: "Sorry",
+                                  content: Text(
+                                    "Only ${widget.taskOwner} can set the tasks state",
+                                  ),
+                                );
+                              }
                             },
                           ),
                           ListTile(
                             title: Text(blocked),
                             onTap: () {
-                              FirebaseFirestore.instance
-                                  .collection('teams')
-                                  .doc(widget.teamId)
-                                  .collection('members')
-                                  .doc(widget.memberId)
-                                  .collection('tasks')
-                                  .doc(task.id)
-                                  .update({'state': blocked});
-                              Get.back();
+                              if (current == widget.memberId) {
+                                FirebaseFirestore.instance
+                                    .collection('teams')
+                                    .doc(widget.teamId)
+                                    .collection('members')
+                                    .doc(widget.memberId)
+                                    .collection('tasks')
+                                    .doc(task.id)
+                                    .update({'state': blocked});
+                                Get.back();
+                              } else {
+                                Get.defaultDialog(
+                                  title: "Sorry",
+                                  content: Text(
+                                    "Only ${widget.taskOwner} can set the tasks state",
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],
@@ -159,3 +203,4 @@ const String notStartedYet = "Not Started Yet";
 const String inProgress = "in Progress";
 const String pending = "Pending";
 const String blocked = "Blocked";
+final current = FirebaseAuth.instance.currentUser!.uid;

@@ -29,6 +29,7 @@ class AddTaskPage extends StatelessWidget {
           .set({
             'role': 'leader',
             'joinedAt': FieldValue.serverTimestamp(),
+            'member_profile': user.photoURL,
             'members_name': user.displayName,
           })
           .then((value) => log("team Added"));
@@ -43,7 +44,7 @@ class AddTaskPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Add Team')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0).r,
         child: Form(
           key: _formKey,
           child: Column(
@@ -65,7 +66,7 @@ class AddTaskPage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Card(
                 child: TextFormField(
                   style: TextStyle(color: touchesColor),
@@ -83,7 +84,7 @@ class AddTaskPage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
             ],
           ),
         ),

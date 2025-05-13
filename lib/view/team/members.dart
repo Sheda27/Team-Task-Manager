@@ -2,7 +2,8 @@ import 'package:team_task_manager/view/index.dart';
 
 class Members extends StatefulWidget {
   final String teamID;
-  const Members({super.key, required this.teamID});
+  final String teamName;
+  const Members({super.key, required this.teamID, required this.teamName});
 
   @override
   State<Members> createState() => _MembersState();
@@ -13,7 +14,7 @@ class _MembersState extends State<Members> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Members')),
+      appBar: AppBar(title: Text(widget.teamName)),
       body: StreamBuilder(
         stream:
             FirebaseFirestore.instance
@@ -26,19 +27,32 @@ class _MembersState extends State<Members> {
             return Center(child: CircularProgressIndicator());
           }
           final members = snapshot.data!.docs;
+          final photoUrl = FirebaseAuth.instance.currentUser!.photoURL;
           return ListView.builder(
             itemCount: members.length,
             itemBuilder: (context, index) {
               final member = members[index];
               return Padding(
-                padding: const EdgeInsets.only(top: 3),
+                padding: EdgeInsets.only(top: 3.r),
                 child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30.r,
+                    backgroundImage:
+                        photoUrl == ""
+                            ? AssetImage('images/defult_profile.jpg')
+                                as ImageProvider
+                            : NetworkImage(photoUrl ?? ''),
+                  ),
                   title: Text(member['members_name'] ?? 'Unknown'),
                   subtitle: Text(member['role'] ?? "no role"),
                   onTap: () {
                     //navigate to member task page
                     Get.to(
-                      TasksPage(teamId: widget.teamID, memberId: member.id),
+                      TasksPage(
+                        teamId: widget.teamID,
+                        memberId: member.id,
+                        taskOwner: member['members_name'],
+                      ),
                     );
                   },
                   trailing: IconButton(
@@ -63,10 +77,10 @@ class _MembersState extends State<Members> {
                             (error) => log("Failed to add user: $error"),
                           );
                       // } else {
-                      Get.defaultDialog(
-                        title: 'Sorry',
-                        content: Text("Only Leader can Remove Members"),
-                      );
+                      // Get.defaultDialog(
+                      //   title: 'Sorry',
+                      //   content: Text("Only Leader can Remove Members"),
+                      // );
                       // }
                     },
                     icon: Icon(Icons.delete),

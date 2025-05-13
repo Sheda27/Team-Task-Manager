@@ -9,7 +9,7 @@ class AddMember extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Add Member")),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(16).r,
         child: Form(
           key: GlobalKey(),
           child: Column(
@@ -24,7 +24,7 @@ class AddMember extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               customButton(
                 onPressed: () async {
                   final userId = idController.text.trim();
@@ -41,6 +41,7 @@ class AddMember extends StatelessWidget {
                     );
                     return;
                   }
+                  final current = FirebaseAuth.instance.currentUser!;
                   final memberAdder = FirebaseFirestore.instance
                       .collection('teams')
                       .doc(teamId);
@@ -53,8 +54,9 @@ class AddMember extends StatelessWidget {
                       .collection('members')
                       .doc(userId)
                       .set({
-                        'member_name': userDoc['user_name'],
+                        'members_name': userDoc['user_name'],
                         'member_email': userDoc['user_email'],
+                        'member_profile': current.photoURL,
                         'role': 'member',
                       });
                   Get.back();

@@ -58,7 +58,7 @@ class _EditTeamState extends State<EditTeam> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   controller: _titleController,
@@ -76,7 +76,7 @@ class _EditTeamState extends State<EditTeam> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   // key: _formKey,
@@ -96,7 +96,7 @@ class _EditTeamState extends State<EditTeam> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: customButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {

@@ -14,7 +14,7 @@ Future signInWithGoogle() async {
     accessToken: googleAuth.accessToken,
     idToken: googleAuth.idToken,
   );
-  Get.offNamed('/teams');
+
   // Once signed in, return the UserCredential
   final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
   final user = userCred.user!;
@@ -25,56 +25,61 @@ Future signInWithGoogle() async {
       'user_name': user.displayName,
       'user_email': user.email,
       'user_role': 'member',
+      'profile_image': user.photoURL,
       'ownerId': user.uid,
+      'fcm_token': '',
       'creatdAt': FieldValue.serverTimestamp(),
     });
   }
+  await Get.offNamed('/teams');
 }
 
 TextEditingController email = TextEditingController();
 TextEditingController pass = TextEditingController();
+bool _showpass = true;
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
-      // appBar: AppBar(
-      //   title: Text('Login'),
-      //   backgroundColor: mai,
-      //   elevation: 0,
-      // ),
+      // appBar: AppBar(title: Text(''), backgroundColor: mainColor, elevation: 0),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
               SizedBox(
                 child: Text(
                   "Welcome...",
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30.sp,
                     fontWeight: FontWeight.bold,
                     color: touchesColor,
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               SizedBox(
-                height: 200,
-                width: 200,
+                height: .3.sh,
+                width: 1.sw,
                 child: Image(image: AssetImage("images/sign-in.png")),
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 30.h),
               Card(
-                child: TextField(
+                child: TextFormField(
                   style: TextStyle(color: touchesColor),
                   controller: email,
                   decoration: InputDecoration(
@@ -82,53 +87,133 @@ class LoginPage extends StatelessWidget {
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please Enter Your E-mail';
+                    }
+                    return null;
+                  },
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Card(
-                child: TextField(
+                child: TextFormField(
                   style: TextStyle(color: touchesColor),
+
                   controller: pass,
+                  obscuringCharacter: '*',
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
                     border: OutlineInputBorder(),
+                    suffix: IconButton(
+                      padding: EdgeInsets.all(0).r,
+                      iconSize: 20.sp,
+                      onPressed: () {
+                        setState(() {
+                          _showpass = !_showpass;
+                        });
+                      },
+                      icon: Icon(
+                        _showpass ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _showpass,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please Enter Your Password';
+                    }
+                    return null;
+                  },
                 ),
               ),
-              SizedBox(height: 24),
-              Flexible(
-                child: SignInButton(
-                  buttonType: ButtonType.mail,
-                  onPressed: () async {
-                    // Handle login logic here
-                    if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                      try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email.text,
-                          password: pass.text,
-                        );
-                        Get.offNamed('/teams');
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          log('No user found for that email.');
-                        } else if (e.code == 'wrong-password') {
-                          log('Wrong password provided for that user.');
-                        }
-                      }
+              SizedBox(
+                height: 30.h,
+                child: TextButton(
+                  onPressed: () {
+                    if (email.text != "") {
+                      Get.defaultDialog(
+                        title: 'Press The Button to Get Reset E-mail',
+                        content: customButton(
+                          onPressed: () async {
+                            try {
+                              await FirebaseAuth.instance
+                                  .sendPasswordResetEmail(email: email.text);
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'user-not-found') {
+                                Get.defaultDialog(
+                                  title: "شنو لكن؟",
+                                  content: Text(
+                                    "No user found for that email. يا بشر",
+                                  ),
+                                );
+                                log('No user found for that email. يا بشر');
+                              }
+                            }
+                          },
+
+                          buttonText: 'Send ',
+                        ),
+                      );
+                    } else {
+                      Get.defaultDialog(
+                        title: "Warning",
+                        content: Text("Please Enter your E-mail First"),
+                      );
                     }
                   },
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Forget Your Password?",
+                        style: TextStyle(color: touchesColor),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Flexible(
-                child: SignInButton(
-                  buttonType: ButtonType.google,
-                  onPressed: () async {
-                    signInWithGoogle();
-                  },
-                ),
+              SignInButton(
+                buttonType: ButtonType.mail,
+                onPressed: () async {
+                  // Handle login logic here
+                  // UserCredential userCredential = await FirebaseAuth.instance
+                  //     .signInWithEmailAndPassword(
+                  //       email: email.text,
+                  //       password: pass.text,
+                  //     );
+                  // User? user = userCredential.user;
+                  if (_formKey.currentState!.validate()) {
+                    try {
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email.text,
+                        password: pass.text,
+                      );
+                      Get.offNamed('/teams');
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        // Get.defaultDialog(title: 'ما لقينا حاجة بالشكل دا',content: Text("كدي سجل حسابك اول "))
+                        log('No user found for that email.');
+                      } else if (e.code == 'wrong-password') {
+                        // Get.defaultDialog(title: 'انت داير معاي مشاكل؟',content: Text(" صلح كلمة السر دي عشان ما اجي ناطي ليك"));
+
+                        log('Wrong password provided for that user.');
+                      }
+                    }
+                  }
+                },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
+
+              SignInButton(
+                buttonType: ButtonType.google,
+                onPressed: () async {
+                  signInWithGoogle();
+                },
+              ),
+              SizedBox(height: 16.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

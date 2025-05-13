@@ -3,22 +3,22 @@ import 'package:team_task_manager/view/index.dart';
 //drawer
 Drawer buildDrawer(BuildContext context) {
   return Drawer(
-    backgroundColor: Colors.grey[900],
+    backgroundColor: secoderyColor,
     // width: 0.8.sw,
     child: ListView(
       padding: EdgeInsets.zero,
       children: [
         DrawerHeader(
-          decoration: BoxDecoration(color: Colors.grey[700]),
-          child: const Text(
-            '------------',
+          decoration: BoxDecoration(color: mainColor),
+          child: Text(
+            '${DateTime.now().year} - ${DateTime.now().month} - ${DateTime.now().day}',
             style: TextStyle(color: Colors.white, fontSize: 24),
           ),
         ),
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
 
-          leading: const Icon(Icons.home, color: Colors.white),
+          leading: Icon(Icons.home, color: Colors.white),
           title: Text(
             'HOME',
             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -31,7 +31,7 @@ Drawer buildDrawer(BuildContext context) {
         ),
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
-          leading: const Icon(Icons.person, color: Colors.white),
+          leading: Icon(Icons.person, color: Colors.white),
           title: Text(
             'profile',
             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -73,7 +73,7 @@ Drawer buildDrawer(BuildContext context) {
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
 
-          leading: const Icon(Icons.exit_to_app, color: Colors.white),
+          leading: Icon(Icons.exit_to_app, color: Colors.white),
           title: Text(
             'Sign-out',
             style: TextStyle(color: Colors.white, fontSize: 18),

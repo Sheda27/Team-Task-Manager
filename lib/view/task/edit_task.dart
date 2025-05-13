@@ -40,7 +40,7 @@ class _EditTaskState extends State<EditTask> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   controller: _taskTitle,
@@ -52,7 +52,7 @@ class _EditTaskState extends State<EditTask> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: Card(
                 child: TextFormField(
                   controller: _taskDescription,
@@ -65,7 +65,7 @@ class _EditTaskState extends State<EditTask> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0).r,
               child: customButton(
                 onPressed: () async {
                   await FirebaseFirestore.instance
