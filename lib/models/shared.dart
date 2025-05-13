@@ -58,7 +58,7 @@ class AppTheme {
 // custom wigets===========================
 
 Widget customButton({
-  required Future<void> Function() onPressed,
+  required void Function() onPressed,
   required String buttonText,
 }) {
   return ElevatedButton(

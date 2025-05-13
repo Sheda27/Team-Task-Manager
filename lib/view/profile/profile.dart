@@ -45,23 +45,24 @@ class Profile extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  final photoUrl = snapshot.data;
+                  final photoUrl = FirebaseAuth.instance.currentUser!.photoURL;
                   return GestureDetector(
                     onTap: () {
                       Get.defaultDialog(
                         title: '',
-                        content:
-                            photoUrl == null || photoUrl.isEmpty
-                                ? Image.asset('images/defult_profile.jpg')
-                                : Image.network(photoUrl),
+                        content: Image(
+                          image: NetworkImage(
+                            photoUrl ?? 'https://example.com/default_image.jpg',
+                          ),
+                        ),
                       );
                     },
                     child: CircleAvatar(
                       backgroundImage:
-                          photoUrl != "" || photoUrl != null
-                              ? NetworkImage(photoUrl ?? '')
-                              : AssetImage('images/defult_profile.jpg')
-                                  as ImageProvider,
+                          photoUrl == "" || photoUrl == null
+                              ? AssetImage('images/defult_profile.jpg')
+                                  as ImageProvider
+                              : NetworkImage(photoUrl),
                       backgroundColor: touchesColor,
                       radius: 50.r,
                     ),

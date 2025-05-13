@@ -55,7 +55,7 @@ class AddTaskPage extends StatelessWidget {
                   style: TextStyle(color: touchesColor),
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'Task Title',
+                    labelText: 'Team Name',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
@@ -72,7 +72,7 @@ class AddTaskPage extends StatelessWidget {
                   style: TextStyle(color: touchesColor),
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    labelText: 'Task Description',
+                    labelText: 'Team Description',
                     border: OutlineInputBorder(),
                   ),
                   maxLines: 4,
@@ -85,31 +85,31 @@ class AddTaskPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
+              customButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Handle task submission logic here
+                    final title = _nameController.text;
+                    final description = _descriptionController.text;
+
+                    // Example: Print to console
+
+                    createTeam();
+                    log('Task Added: $title, $description');
+
+                    // Clear fields after submission
+                    _nameController.clear();
+                    _descriptionController.clear();
+                    Get.offNamed('/teams');
+                    // Optionally, navigate back or show a success message
+                    Get.snackbar("", "Team added successfully!");
+                  }
+                },
+                buttonText: 'Add',
+              ),
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            // Handle task submission logic here
-            final title = _nameController.text;
-            final description = _descriptionController.text;
-
-            // Example: Print to console
-
-            createTeam();
-            log('Task Added: $title, $description');
-
-            // Clear fields after submission
-            _nameController.clear();
-            _descriptionController.clear();
-            Get.offNamed('/teams');
-            // Optionally, navigate back or show a success message
-            Get.snackbar("", "Team added successfully!");
-          }
-        },
-        child: Icon(Icons.done),
       ),
     );
   }

@@ -73,7 +73,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                         padding: const EdgeInsets.only(top: 3),
                         child: ListTile(
                           title: Text("${teams[index]['title']}"),
-                          // subtitle: Text("${teams[index]['members_list']}"),
+                          subtitle: Text("${teams[index]['description']}"),
                           trailing: IconButton(
                             onPressed: () {
                               final String currentUser =
