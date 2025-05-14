@@ -57,9 +57,15 @@ class AddMember extends StatelessWidget {
                         'members_name': userDoc['user_name'],
                         'member_email': userDoc['user_email'],
                         'member_profile': current.photoURL,
+                        'member_Id': userDoc['ownerId'],
                         'role': 'member',
                       });
                   Get.back();
+                  Get.snackbar(
+                    '${userDoc['user_name']} Added Succesfully',
+                    "${userDoc['user_name']} is now A member",
+                  );
+                  log("${userDoc['user_name']} added succesfully");
                 },
                 buttonText: "Add",
               ),

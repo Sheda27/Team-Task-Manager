@@ -78,6 +78,7 @@ class AddTask extends StatelessWidget {
                           'createdAt': DateTime.now(),
                         });
                     Get.back();
+                    Get.snackbar("Task Added Succesfully", "");
                   }
                 },
                 buttonText: "Add",

@@ -53,24 +53,35 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                     .where('members_list', arrayContains: user.uid)
                     .snapshots(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(
                     backgroundColor: touchesColor,
                   ),
                 );
               }
+              if (snapshot.data!.docs.isEmpty) {
+                return Center(
+                  child: Text(
+                    "Start Point",
+                    style: TextStyle(
+                      color: touchesColor.withAlpha(70),
+                      fontSize: 30,
+                    ),
+                  ),
+                );
+              }
               final teams = snapshot.data!.docs;
               return Padding(
                 padding: const EdgeInsets.only(top: 3),
-                child: AnimatedList(
+                child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
-                  initialItemCount: teams.length,
-                  itemBuilder: (context, index, anim) {
+                  itemCount: teams.length,
+                  itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 3.0),
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 3),
+                        padding: const EdgeInsets.only(top: 3).r,
                         child: ListTile(
                           title: Text("${teams[index]['title']}"),
                           subtitle: Text("${teams[index]['description']}"),
@@ -106,6 +117,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                                   onPressed: () {
                                     if (teams[index]['createdBy'] ==
                                         currentUser) {
+                                      Get.back();
                                       team
                                           .doc(teams[index].id)
                                           .delete()
@@ -136,6 +148,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                               () => Members(
                                 teamID: teams[index].id,
                                 teamName: teams[index]['title'],
+                                leader: teams[index]['createdBy'],
                               ),
                             );
                           },

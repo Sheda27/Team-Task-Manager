@@ -20,6 +20,7 @@ class AddTaskPage extends StatelessWidget {
         'createdBy': user.uid, // Stokes and Sons
         'members_list': FieldValue.arrayUnion([user.uid]),
         'members_name': user.displayName,
+
         'createdAt': FieldValue.serverTimestamp(), // Stokes and Sons
       });
 
@@ -29,6 +30,7 @@ class AddTaskPage extends StatelessWidget {
           .set({
             'role': 'leader',
             'joinedAt': FieldValue.serverTimestamp(),
+            'member_Id': user.uid,
             'member_profile': user.photoURL,
             'members_name': user.displayName,
           })

@@ -50,192 +50,206 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainColor,
-      // appBar: AppBar(title: Text(''), backgroundColor: mainColor, elevation: 0),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              SizedBox(
-                child: Text(
-                  "Welcome...",
-                  style: TextStyle(
-                    fontSize: 30.sp,
-                    fontWeight: FontWeight.bold,
-                    color: touchesColor,
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              SizedBox(
-                height: .3.sh,
-                width: 1.sw,
-                child: Image(image: AssetImage("images/sign-in.png")),
-              ),
-
-              SizedBox(height: 30.h),
-              Card(
-                child: TextFormField(
-                  style: TextStyle(color: touchesColor),
-                  controller: email,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter Your E-mail';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Card(
-                child: TextFormField(
-                  style: TextStyle(color: touchesColor),
-
-                  controller: pass,
-                  obscuringCharacter: '*',
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
-                    border: OutlineInputBorder(),
-                    suffix: IconButton(
-                      padding: EdgeInsets.all(0).r,
-                      iconSize: 20.sp,
-                      onPressed: () {
-                        setState(() {
-                          _showpass = !_showpass;
-                        });
-                      },
-                      icon: Icon(
-                        _showpass ? Icons.visibility : Icons.visibility_off,
-                      ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: mainColor,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                SizedBox(
+                  child: Text(
+                    "Welcome...",
+                    style: TextStyle(
+                      fontSize: 30.sp,
+                      fontWeight: FontWeight.bold,
+                      color: touchesColor,
                     ),
                   ),
-                  obscureText: _showpass,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter Your Password';
-                    }
-                    return null;
-                  },
                 ),
-              ),
-              SizedBox(
-                height: 30.h,
-                child: TextButton(
-                  onPressed: () {
-                    if (email.text != "") {
-                      Get.defaultDialog(
-                        title: 'Press The Button to Get Reset E-mail',
-                        content: customButton(
-                          onPressed: () async {
-                            try {
-                              await FirebaseAuth.instance
-                                  .sendPasswordResetEmail(email: email.text);
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'user-not-found') {
-                                Get.defaultDialog(
-                                  title: "شنو لكن؟",
-                                  content: Text(
-                                    "No user found for that email. يا بشر",
-                                  ),
-                                );
-                                log('No user found for that email. يا بشر');
-                              }
-                            }
-                          },
+                SizedBox(height: 16.h),
+                SizedBox(
+                  height: .3.sh,
+                  width: 1.sw,
+                  child: Image(image: AssetImage("images/sign-in.png")),
+                ),
 
-                          buttonText: 'Send ',
-                        ),
-                      );
-                    } else {
-                      Get.defaultDialog(
-                        title: "Warning",
-                        content: Text("Please Enter your E-mail First"),
-                      );
-                    }
-                  },
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Forget Your Password?",
-                        style: TextStyle(color: touchesColor),
-                      ),
-                    ],
+                SizedBox(height: 30.h),
+                Card(
+                  child: TextFormField(
+                    style: TextStyle(color: touchesColor),
+                    controller: email,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please Enter Your E-mail';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-              ),
-              SignInButton(
-                buttonType: ButtonType.mail,
-                onPressed: () async {
-                  // Handle login logic here
-                  // UserCredential userCredential = await FirebaseAuth.instance
-                  //     .signInWithEmailAndPassword(
-                  //       email: email.text,
-                  //       password: pass.text,
-                  //     );
-                  // User? user = userCredential.user;
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email.text,
-                        password: pass.text,
-                      );
-                      Get.offNamed('/teams');
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        // Get.defaultDialog(title: 'ما لقينا حاجة بالشكل دا',content: Text("كدي سجل حسابك اول "))
-                        log('No user found for that email.');
-                      } else if (e.code == 'wrong-password') {
-                        // Get.defaultDialog(title: 'انت داير معاي مشاكل؟',content: Text(" صلح كلمة السر دي عشان ما اجي ناطي ليك"));
+                SizedBox(height: 16.h),
+                Card(
+                  child: TextFormField(
+                    style: TextStyle(color: touchesColor),
 
-                        log('Wrong password provided for that user.');
+                    controller: pass,
+                    obscuringCharacter: '*',
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
+                      border: OutlineInputBorder(),
+                      suffix: IconButton(
+                        padding: EdgeInsets.all(0).r,
+                        iconSize: 20.sp,
+                        onPressed: () {
+                          setState(() {
+                            _showpass = !_showpass;
+                          });
+                        },
+                        icon: Icon(
+                          _showpass ? Icons.visibility : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
+                    obscureText: _showpass,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please Enter Your Password';
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 30.h,
+                  child: TextButton(
+                    onPressed: () {
+                      if (email.text != "") {
+                        Get.defaultDialog(
+                          title: 'Press The Button to Get Reset E-mail',
+                          content: customButton(
+                            onPressed: () async {
+                              try {
+                                await FirebaseAuth.instance
+                                    .sendPasswordResetEmail(email: email.text);
+                                Get.snackbar(
+                                  "Reset E-mail was sent.. ",
+                                  "Please Check Your Inbox",
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'user-not-found') {
+                                  Get.snackbar(
+                                    "User Not Found",
+
+                                    "No user found for that email.",
+                                  );
+                                  log(
+                                    '===============================No user found for that email.',
+                                  );
+                                }
+                              }
+                            },
+
+                            buttonText: 'Send ',
+                          ),
+                        );
+                      } else {
+                        Get.defaultDialog(
+                          title: "Warning",
+                          content: Text("Please Enter your E-mail First"),
+                        );
+                      }
+                    },
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "Forget Your Password?",
+                          style: TextStyle(color: touchesColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SignInButton(
+                  buttonType: ButtonType.mail,
+                  onPressed: () async {
+                    // Handle login logic here
+
+                    if (_formKey.currentState!.validate()) {
+                      try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email.text,
+                          password: pass.text,
+                        );
+                        Get.offNamed('/teams');
+                        email.clear();
+                        pass.clear();
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          Get.snackbar(
+                            "User Not Found ",
+                            "Please Register Try to Register",
+                          );
+                          log('No user found for that email.');
+                        } else if (e.code == 'wrong-password') {
+                          Get.snackbar(
+                            "User Not Found ",
+                            "Please Try to Register",
+                          );
+                          log('Wrong password provided for that user.');
+                        }
                       }
                     }
-                  }
-                },
-              ),
-              SizedBox(height: 16.h),
+                  },
+                ),
+                SizedBox(height: 16.h),
 
-              SignInButton(
-                buttonType: ButtonType.google,
-                onPressed: () async {
-                  signInWithGoogle();
-                },
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Don't have an account?"),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to registration page
-                      Get.offNamed('/sign-up');
-                      email.clear();
-                      pass.clear();
-                    },
-                    child: Text(
-                      ' Sign up',
-                      style: TextStyle(
-                        color: Colors.grey[50],
-                        fontWeight: FontWeight.bold,
+                SignInButton(
+                  buttonType: ButtonType.google,
+                  onPressed: () async {
+                    signInWithGoogle();
+                  },
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        // Navigate to registration page
+                        Get.offNamed('/sign-up');
+                        email.clear();
+                        pass.clear();
+                      },
+                      child: Text(
+                        ' Sign up',
+                        style: TextStyle(
+                          color: Colors.grey[50],
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

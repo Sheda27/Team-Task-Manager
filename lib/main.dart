@@ -1,9 +1,10 @@
 import 'package:team_task_manager/view/index.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
       builder: (_, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: ' app demo',
+          title: 'TTM',
           themeMode: ThemeMode.light,
           theme:
               AppTheme()

@@ -10,9 +10,29 @@ Drawer buildDrawer(BuildContext context) {
       children: [
         DrawerHeader(
           decoration: BoxDecoration(color: mainColor),
-          child: Text(
-            '${DateTime.now().year} - ${DateTime.now().month} - ${DateTime.now().day}',
-            style: TextStyle(color: Colors.white, fontSize: 24),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 30.r,
+                backgroundImage: NetworkImage(
+                  FirebaseAuth.instance.currentUser!.photoURL!,
+                ),
+              ),
+              SizedBox(width: 5.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${FirebaseAuth.instance.currentUser!.displayName}",
+                    style: TextStyle(
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         ListTile(
@@ -25,7 +45,7 @@ Drawer buildDrawer(BuildContext context) {
           ),
           onTap: () {
             // Handle navigation to All Notes
-            Get.toNamed('/teams');
+            Get.back();
             log("all notes------------------------------------------");
           },
         ),
@@ -42,19 +62,19 @@ Drawer buildDrawer(BuildContext context) {
             log("add notes------------------------------------------");
           },
         ),
-        // ListTile(
-        //   tileColor: Color.fromRGBO(222, 166, 122, 0),
-        //   leading: const Icon(Icons.task_alt, color: Colors.white),
-        //   title: Text(
-        //     'To Do List',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   onTap: () {
-        //     // Handle navigation to Add Note
-        //     Get.toNamed('/');
-        //     log("add notes------------------------------------------");
-        //   },
-        // ),
+        ListTile(
+          tileColor: Color.fromRGBO(222, 166, 122, 0),
+          leading: const Icon(Icons.settings, color: Colors.white),
+          title: Text(
+            'Settings',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          onTap: () {
+            // Handle navigation to Add Note
+            Get.toNamed('/');
+            log("add notes------------------------------------------");
+          },
+        ),
 
         // ListTile(
         //   tileColor: Color.fromRGBO(222, 166, 122, 0),

@@ -51,7 +51,7 @@ class _EditTeamState extends State<EditTeam> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Task')),
+      appBar: AppBar(title: Text('Add Team')),
       body: Form(
         key: _formKey,
         child: Column(
@@ -63,7 +63,7 @@ class _EditTeamState extends State<EditTeam> {
                 child: TextFormField(
                   controller: _titleController,
                   decoration: InputDecoration(
-                    labelText: 'Task Title',
+                    labelText: 'Team Name',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
@@ -82,7 +82,7 @@ class _EditTeamState extends State<EditTeam> {
                   // key: _formKey,
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    labelText: 'Task Description',
+                    labelText: 'Team Description',
                     border: OutlineInputBorder(),
                   ),
                   maxLines: 4,
@@ -121,7 +121,7 @@ class _EditTeamState extends State<EditTeam> {
                     );
                   }
                 },
-                buttonText: 'Add Task',
+                buttonText: 'Add Team',
               ),
             ),
           ],
