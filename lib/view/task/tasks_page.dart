@@ -34,6 +34,24 @@ class _TasksPageState extends State<TasksPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
+          if (snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: SizedBox(
+                height: .2.sh,
+                width: .8.sw,
+                child: ListTile(
+                  tileColor: touchesColor.withAlpha(0),
+                  title: Text(
+                    "No Tasks For ${widget.taskOwner}",
+                    style: TextStyle(
+                      color: touchesColor.withAlpha(70),
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
           final tasks = snapshot.data!.docs;
 
           return ListView.builder(

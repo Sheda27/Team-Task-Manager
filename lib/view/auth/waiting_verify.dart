@@ -35,7 +35,13 @@ class _WaitingVerifyState extends State<WaitingVerify> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: secoderyColor,
-      body: Center(child: Text("please verify your email")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(child: Text("please verify your email")),
+          CircularProgressIndicator(color: touchesColor),
+        ],
+      ),
     );
   }
 }

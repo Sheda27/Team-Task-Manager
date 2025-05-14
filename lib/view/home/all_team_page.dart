@@ -62,11 +62,18 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
               }
               if (snapshot.data!.docs.isEmpty) {
                 return Center(
-                  child: Text(
-                    "Start Point",
-                    style: TextStyle(
-                      color: touchesColor.withAlpha(70),
-                      fontSize: 30,
+                  child: SizedBox(
+                    height: .2.sh,
+                    width: .8.sw,
+                    child: ListTile(
+                      tileColor: touchesColor.withAlpha(0),
+                      title: Text(
+                        " Create a Team and Add some members",
+                        style: TextStyle(
+                          color: touchesColor.withAlpha(70),
+                          fontSize: 25,
+                        ),
+                      ),
                     ),
                   ),
                 );

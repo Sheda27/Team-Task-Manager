@@ -23,6 +23,7 @@ export 'package:team_task_manager/view/task/tasks_page.dart';
 export 'package:team_task_manager/view/team/add_member.dart';
 export 'package:sign_button/sign_button.dart';
 export 'package:google_sign_in/google_sign_in.dart';
+export 'package:team_task_manager/controller.dart/controller.dart';
 export 'dart:async';
 export 'package:flutter/services.dart';
 export 'package:image_picker/image_picker.dart';

@@ -64,34 +64,6 @@ Drawer buildDrawer(BuildContext context) {
         ),
         ListTile(
           tileColor: Color.fromRGBO(222, 166, 122, 0),
-          leading: const Icon(Icons.settings, color: Colors.white),
-          title: Text(
-            'Settings',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
-          onTap: () {
-            // Handle navigation to Add Note
-            Get.toNamed('/');
-            log("add notes------------------------------------------");
-          },
-        ),
-
-        // ListTile(
-        //   tileColor: Color.fromRGBO(222, 166, 122, 0),
-
-        //   leading: const Icon(Icons.list, color: Colors.white),
-        //   title: Text(
-        //     'completed todo',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   onTap: () {
-        //     // Handle navigation to Settings
-        //     Get.toNamed('/');
-        //     log("completed todo------------------------------------------");
-        //   },
-        // ),
-        ListTile(
-          tileColor: Color.fromRGBO(222, 166, 122, 0),
 
           leading: Icon(Icons.exit_to_app, color: Colors.white),
           title: Text(

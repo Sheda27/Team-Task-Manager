@@ -36,24 +36,6 @@ class AppTheme {
       textTheme: ButtonTextTheme.primary,
     ),
   );
-
-  // static ThemeData darkTheme = ThemeData(
-  //   brightness: Brightness.dark,
-  //   primarySwatch: Colors.blueGrey,
-  //   appBarTheme: AppBarTheme(
-  //     backgroundColor: Colors.blueGrey,
-  //     foregroundColor: Colors.white,
-  //     elevation: 0,
-  //   ),
-  //   textTheme: TextTheme(
-  //     bodyText1: TextStyle(color: Colors.white),
-  //     bodyText2: TextStyle(color: Colors.white70),
-  //   ),
-  //   buttonTheme: ButtonThemeData(
-  //     buttonColor: Colors.blueGrey,
-  //     textTheme: ButtonTextTheme.primary,
-  //   ),
-  // );
 }
 // custom wigets===========================
 
