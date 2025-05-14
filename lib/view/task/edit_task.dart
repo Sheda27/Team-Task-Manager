@@ -33,60 +33,65 @@ class _EditTaskState extends State<EditTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Edit Task")),
-      body: Form(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: Card(
-                child: TextFormField(
-                  controller: _taskTitle,
-                  decoration: InputDecoration(
-                    label: Text("Task Title"),
-                    border: OutlineInputBorder(),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text("Edit Task")),
+        body: Form(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: Card(
+                  child: TextFormField(
+                    controller: _taskTitle,
+                    decoration: InputDecoration(
+                      label: Text("Task Title"),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: Card(
-                child: TextFormField(
-                  controller: _taskDescription,
-                  decoration: InputDecoration(
-                    label: Text("Description"),
-                    border: OutlineInputBorder(),
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: Card(
+                  child: TextFormField(
+                    controller: _taskDescription,
+                    decoration: InputDecoration(
+                      label: Text("Description"),
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 4,
                   ),
-                  maxLines: 4,
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: customButton(
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection('teams')
-                      .doc(widget.teamId)
-                      .collection('members')
-                      .doc(widget.userId)
-                      .collection('tasks')
-                      .doc(widget.taskId)
-                      .set({
-                        'task_title': _taskTitle.text,
-                        'task_describe': _taskDescription.text,
-                        'state': '',
-                        'createdAt': FieldValue.serverTimestamp(),
-                      });
-                  Get.back();
-                },
-                buttonText: 'Done',
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: customButton(
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('teams')
+                        .doc(widget.teamId)
+                        .collection('members')
+                        .doc(widget.userId)
+                        .collection('tasks')
+                        .doc(widget.taskId)
+                        .set({
+                          'task_title': _taskTitle.text,
+                          'task_describe': _taskDescription.text,
+                          'state': '',
+                          'createdAt': FieldValue.serverTimestamp(),
+                        });
+                    Get.back();
+                  },
+                  buttonText: 'Done',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -50,81 +50,86 @@ class _EditTeamState extends State<EditTeam> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Add Team')),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: Card(
-                child: TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Team Name',
-                    border: OutlineInputBorder(),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text('Add Team')),
+        body: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: Card(
+                  child: TextFormField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      labelText: 'Team Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a title';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: Card(
-                child: TextFormField(
-                  // key: _formKey,
-                  controller: _descriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'Team Description',
-                    border: OutlineInputBorder(),
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: Card(
+                  child: TextFormField(
+                    // key: _formKey,
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      labelText: 'Team Description',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 4,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a description';
+                      }
+                      return null;
+                    },
                   ),
-                  maxLines: 4,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0).r,
-              child: customButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // Handle task submission logic here
-                    final title = _titleController.text;
-                    final description = _descriptionController.text;
+              Padding(
+                padding: EdgeInsets.all(8.0).r,
+                child: customButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      // Handle task submission logic here
+                      final title = _titleController.text;
+                      final description = _descriptionController.text;
 
-                    // Example: Print to console
+                      // Example: Print to console
 
-                    updateUser();
-                    log('Task Added: $title, $description');
+                      updateUser();
+                      log('Task Added: $title, $description');
 
-                    // Clear fields after submission
-                    _titleController.clear();
-                    _descriptionController.clear();
-                    Get.offNamed('/teams');
-                    // Optionally, navigate back or show a success message
-                    Get.snackbar(
-                      "",
-                      "Task added successfully!",
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                  }
-                },
-                buttonText: 'Add Team',
+                      // Clear fields after submission
+                      _titleController.clear();
+                      _descriptionController.clear();
+                      Get.offNamed('/teams');
+                      // Optionally, navigate back or show a success message
+                      Get.snackbar(
+                        "",
+                        "Task added successfully!",
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                  },
+                  buttonText: 'Add Team',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
