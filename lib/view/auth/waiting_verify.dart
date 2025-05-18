@@ -10,7 +10,7 @@ class WaitingVerify extends StatefulWidget {
 }
 
 class _WaitingVerifyState extends State<WaitingVerify> {
-  late Timer _timer;
+  Timer? _timer;
   @override
   void initState() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
@@ -19,7 +19,9 @@ class _WaitingVerifyState extends State<WaitingVerify> {
 
       if (user != null && user.emailVerified) {
         timer.cancel();
-        await Get.offAllNamed('teams');
+        Future.delayed(Duration(milliseconds: 500), () {
+          Get.offAllNamed('teams');
+        });
       }
     });
     super.initState();
@@ -27,7 +29,7 @@ class _WaitingVerifyState extends State<WaitingVerify> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 

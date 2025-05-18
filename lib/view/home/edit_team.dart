@@ -1,9 +1,10 @@
 import 'package:team_task_manager/view/index.dart';
 
+// EditTeam widget allows editing an existing team's details
 class EditTeam extends StatefulWidget {
-  final String id;
-  final String title;
-  final String describe;
+  final String id; // Team document ID in Firestore
+  final String title; // Initial team title
+  final String describe; // Initial team description
 
   const EditTeam({
     super.key,
@@ -17,22 +18,25 @@ class EditTeam extends StatefulWidget {
 }
 
 class _EditTeamState extends State<EditTeam> {
+  // Controllers for text fields
   final TextEditingController _titleController = TextEditingController();
-
   final TextEditingController _descriptionController = TextEditingController();
 
+  // Key for the form validation
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  // Reference to the 'teams' collection in Firestore
   final CollectionReference tasks = FirebaseFirestore.instance.collection(
     'teams',
   );
 
+  // Updates the team document in Firestore
   Future<void> updateUser() {
-    // Call the user's CollectionReference to add a new user
     final user = FirebaseAuth.instance.currentUser!;
     return tasks
         .doc(widget.id)
         .set({
-          'title': _titleController.text, // John Doe
+          'title': _titleController.text,
           'description': _descriptionController.text,
           'createdBy': user.uid,
           'createdAt': DateTime.now(),
@@ -43,6 +47,7 @@ class _EditTeamState extends State<EditTeam> {
 
   @override
   void initState() {
+    // Initialize text fields with existing team data
     _titleController.text = widget.title;
     _descriptionController.text = widget.describe;
     super.initState();
@@ -52,6 +57,7 @@ class _EditTeamState extends State<EditTeam> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // Dismiss keyboard when tapping outside
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
@@ -61,15 +67,13 @@ class _EditTeamState extends State<EditTeam> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Team name input field
               Padding(
                 padding: EdgeInsets.all(8.0).r,
                 child: Card(
-                  child: TextFormField(
+                  child: myTextField(
                     controller: _titleController,
-                    decoration: InputDecoration(
-                      labelText: 'Team Name',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'Team Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a title';
@@ -79,17 +83,14 @@ class _EditTeamState extends State<EditTeam> {
                   ),
                 ),
               ),
+              // Team description input field
               Padding(
                 padding: EdgeInsets.all(8.0).r,
                 child: Card(
-                  child: TextFormField(
-                    // key: _formKey,
+                  child: myTextField(
                     controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Team Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 4,
+                    label: 'Team Description',
+                    maxLines: 6,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a description';
@@ -99,16 +100,15 @@ class _EditTeamState extends State<EditTeam> {
                   ),
                 ),
               ),
+              // Submit button
               Padding(
                 padding: EdgeInsets.all(8.0).r,
                 child: customButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // Handle task submission logic here
+                      // If form is valid, update the team
                       final title = _titleController.text;
                       final description = _descriptionController.text;
-
-                      // Example: Print to console
 
                       updateUser();
                       log('Task Added: $title, $description');
@@ -116,8 +116,9 @@ class _EditTeamState extends State<EditTeam> {
                       // Clear fields after submission
                       _titleController.clear();
                       _descriptionController.clear();
-                      Get.offNamed('/teams');
-                      // Optionally, navigate back or show a success message
+                      Get.offNamed('/teams'); // Navigate to teams page
+
+                      // Show success message
                       Get.snackbar(
                         "",
                         "Task added successfully!",
@@ -125,7 +126,7 @@ class _EditTeamState extends State<EditTeam> {
                       );
                     }
                   },
-                  buttonText: 'Add Team',
+                  buttonText: 'Save',
                 ),
               ),
             ],

@@ -1,8 +1,10 @@
 import 'package:team_task_manager/view/index.dart';
 
 class Profile extends StatelessWidget {
+  // Get the current user's UID from FirebaseAuth
   final String id = FirebaseAuth.instance.currentUser!.uid;
 
+  // Fetch user data from Firestore
   Future<Map<String, dynamic>> getUserData() async {
     DocumentSnapshot documentSnapshot =
         await FirebaseFirestore.instance.collection('Users').doc(id).get();
@@ -16,14 +18,17 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Profile")),
       body: FutureBuilder<Map<String, dynamic>>(
+        // Fetch user data asynchronously
         future: getUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show loading indicator while waiting for data
             return Center(
               child: CircularProgressIndicator(backgroundColor: touchesColor),
             );
           }
           if (!snapshot.hasData || snapshot.hasError) {
+            // Show error message if data fetch fails
             return Center(child: Text("Error"));
           }
           final userData = snapshot.data!;
@@ -31,6 +36,7 @@ class Profile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: 16.h),
+              // Display profile image with loading indicator
               FutureBuilder<String?>(
                 future: FirebaseFirestore.instance
                     .collection('Users')
@@ -39,15 +45,18 @@ class Profile extends StatelessWidget {
                     .then((doc) => doc['profile_image'] as String?),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show loading indicator inside avatar
                     return CircleAvatar(
                       backgroundColor: touchesColor,
                       radius: 50.r,
                       child: CircularProgressIndicator(),
                     );
                   }
+                  // Get photo URL from FirebaseAuth
                   final photoUrl = FirebaseAuth.instance.currentUser!.photoURL;
                   return GestureDetector(
                     onTap: () {
+                      // Show enlarged profile image in dialog
                       Get.defaultDialog(
                         title: '',
                         content: Image(
@@ -70,6 +79,7 @@ class Profile extends StatelessWidget {
                 },
               ),
               SizedBox(height: 16),
+              // Button to copy user ID to clipboard
               TextButton(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: id));
@@ -81,8 +91,10 @@ class Profile extends StatelessWidget {
                 child: Text("ID : $id"),
               ),
               SizedBox(height: 16.h),
+              // Display user name
               ListTile(title: Text(userData['user_name'])),
               SizedBox(height: 16.h),
+              // Display user email
               ListTile(title: Text(userData['user_email'])),
             ],
           );
@@ -91,6 +103,9 @@ class Profile extends StatelessWidget {
     );
   }
 }
+
+// The following code is commented out. It shows how to pick and upload a profile image to Firebase Storage,
+// then update the user's Firestore document with the image URL.
 
 // Future<void> pickAndUploadImage() async {
 //   final picker = ImagePicker();
@@ -102,14 +117,14 @@ class Profile extends StatelessWidget {
 //   String uid = FirebaseAuth.instance.currentUser!.uid;
 //   String fileName = 'profile_images/$uid.jpg';
 
-//   // رفع الصورة
+//   // Upload the image to Firebase Storage
 //   final ref = FirebaseStorage.instance.ref().child(fileName);
 //   await ref.putFile(imageFile);
 
-//   // جلب رابط الصورة
+//   // Get the download URL of the uploaded image
 //   final imageUrl = await ref.getDownloadURL();
 
-//   // حفظ الرابط في Firestore
+//   // Save the image URL in Firestore
 //   await FirebaseFirestore.instance.collection('Users').doc(uid).update({
 //     'profile_image': imageUrl,
 //   });

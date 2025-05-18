@@ -60,3 +60,37 @@ Widget customButton({
     ),
   );
 }
+
+Widget myTextField({
+  required String label,
+  bool? obscure,
+  int? maxLines,
+  TextEditingController? controller,
+  String? Function(String?)? validator,
+  TextInputType? keyboardType,
+  Widget? suffix,
+}) {
+  return TextFormField(
+    style: TextStyle(color: touchesColor),
+    controller: controller,
+    obscuringCharacter: '*',
+
+    decoration: InputDecoration(
+      contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
+
+      suffix: suffix,
+
+      labelText: label,
+      labelStyle: TextStyle(color: touchesColor, fontWeight: FontWeight.bold),
+      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: touchesColor, width: 3.w),
+      ),
+    ),
+    maxLines: maxLines,
+    obscureText: obscure ?? false,
+    keyboardType: keyboardType,
+
+    validator: validator,
+  );
+}

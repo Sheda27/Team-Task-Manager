@@ -14,14 +14,15 @@ class TasksPage extends StatefulWidget {
   @override
   State<TasksPage> createState() => _TasksPageState();
 }
-// final CollectionReference =FirebaseFirestore.instance.collection('tasks').doc()
 
+// Main state class for the TasksPage
 class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.taskOwner)),
       body: StreamBuilder(
+        // Listen to real-time updates of tasks for a specific team member
         stream:
             FirebaseFirestore.instance
                 .collection('teams')
@@ -31,9 +32,11 @@ class _TasksPageState extends State<TasksPage> {
                 .collection('tasks')
                 .snapshots(),
         builder: (context, snapshot) {
+          // Show loading indicator while waiting for data
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
+          // Show message if there are no tasks
           if (snapshot.data!.docs.isEmpty) {
             return Center(
               child: SizedBox(
@@ -54,6 +57,7 @@ class _TasksPageState extends State<TasksPage> {
           }
           final tasks = snapshot.data!.docs;
 
+          // Build a list of tasks
           return ListView.builder(
             itemCount: tasks.length,
             itemBuilder: (context, index) {
@@ -62,14 +66,17 @@ class _TasksPageState extends State<TasksPage> {
               return Padding(
                 padding: EdgeInsets.only(top: 3).r,
                 child: GestureDetector(
+                  // Double tap to change task state
                   onDoubleTap: () {
                     Get.defaultDialog(
                       title: "Choose Task State",
                       content: Column(
                         children: [
+                          // Each ListTile allows changing the task state
                           ListTile(
                             title: Text(notStartedYet),
                             onTap: () {
+                              // Only the task owner can change the state
                               if (current == widget.memberId) {
                                 FirebaseFirestore.instance
                                     .collection('teams')
@@ -187,15 +194,19 @@ class _TasksPageState extends State<TasksPage> {
                     );
                   },
                   child: ExpansionTile(
+                    // Display task title and state
                     title: Text(task["task_title"]),
                     subtitle: Text("${task['state']}"),
                     trailing: IconButton(
+                      // Show dialog for editing or deleting the task
                       onPressed: () {
                         Get.defaultDialog(
-                          title: "Alert",
+                          title: "",
                           content: Text("What you want to do??"),
                           textConfirm: 'Edit',
                           onConfirm: () {
+                            // Navigate to EditTask page
+                            Get.back();
                             Get.to(
                               EditTask(
                                 teamId: widget.teamId,
@@ -208,6 +219,7 @@ class _TasksPageState extends State<TasksPage> {
                           },
                           textCancel: 'Delete',
                           onCancel: () {
+                            // Delete the task from Firestore
                             FirebaseFirestore.instance
                                 .collection('teams')
                                 .doc(widget.teamId)
@@ -225,7 +237,7 @@ class _TasksPageState extends State<TasksPage> {
                       },
                       icon: Icon(Icons.more_vert),
                     ),
-
+                    // Show task description when expanded
                     children: [Text("${task['task_describe']}")],
                   ),
                 ),
@@ -235,6 +247,7 @@ class _TasksPageState extends State<TasksPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        // Button to add a new task
         onPressed: () {
           Get.to(AddTask(teamId: widget.teamId, userId: widget.memberId));
         },
@@ -244,9 +257,12 @@ class _TasksPageState extends State<TasksPage> {
   }
 }
 
+// Task state constants
 const String notStartedYet = "Not Started Yet";
 const String inProgress = "in Progress";
 const String done = "Done";
 const String pending = "Pending";
 const String blocked = "Blocked";
+
+// Current user ID
 final current = FirebaseAuth.instance.currentUser!.uid;

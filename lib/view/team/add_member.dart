@@ -4,9 +4,11 @@ class AddMember extends StatelessWidget {
   final String teamId;
   AddMember({super.key, required this.teamId});
   final TextEditingController idController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Unfocus text fields when tapping outside
       onTap: () {
         FocusScope.of(context).unfocus();
       },
@@ -20,24 +22,25 @@ class AddMember extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
-                  child: TextField(
+                  child: myTextField(
                     controller: idController,
-                    decoration: InputDecoration(
-                      label: Text("Enter User ID"),
-                      border: OutlineInputBorder(),
-                    ),
+                    label: "Enter User ID",
                   ),
                 ),
                 SizedBox(height: 20.h),
                 customButton(
                   onPressed: () async {
+                    // Get the entered user ID
                     final userId = idController.text.trim();
+
+                    // Check if the user exists in Firestore
                     final userDoc =
                         await FirebaseFirestore.instance
                             .collection('Users')
                             .doc(userId)
                             .get();
                     if (!userDoc.exists) {
+                      // Show dialog if user not found
                       Get.defaultDialog(
                         title: "",
                         content: Text("User Not Found"),
@@ -45,15 +48,23 @@ class AddMember extends StatelessWidget {
                       );
                       return;
                     }
+
+                    // Get current user info
                     final current = FirebaseAuth.instance.currentUser!;
+
+                    // Reference to the team document
                     final memberAdder = FirebaseFirestore.instance
                         .collection('teams')
                         .doc(teamId);
+
+                    // Add user ID to the team's members_list array
                     await memberAdder.update({
                       'members_list': FieldValue.arrayUnion([
                         idController.text,
                       ]),
                     });
+
+                    // Add member details to the team's members subcollection
                     await FirebaseFirestore.instance
                         .collection('teams')
                         .doc(teamId)
@@ -66,11 +77,17 @@ class AddMember extends StatelessWidget {
                           'member_Id': userDoc['ownerId'],
                           'role': 'member',
                         });
+
+                    // Close the current screen
                     Get.back();
+
+                    // Show a snackbar notification
                     Get.snackbar(
                       '${userDoc['user_name']} Added Succesfully',
                       "${userDoc['user_name']} is now A member",
                     );
+
+                    // Log the addition
                     log("${userDoc['user_name']} added succesfully");
                   },
                   buttonText: "Add",

@@ -15,6 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+  // SignUpContoller signUpContoller = Get.put(SignUpContoller());
 
   bool _showpass = true;
 
@@ -55,14 +56,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   SizedBox(height: 20.h),
                   Card(
-                    child: TextFormField(
-                      style: TextStyle(color: touchesColor),
+                    child: myTextField(
                       controller: _userNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        labelStyle: TextStyle(color: touchesColor),
-                        border: OutlineInputBorder(),
-                      ),
+                      label: 'Full Name',
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please Enter Your Name';
@@ -73,14 +69,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 20.h),
                   Card(
-                    child: TextFormField(
-                      style: TextStyle(color: touchesColor),
+                    child: myTextField(
                       controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: touchesColor),
-                        border: OutlineInputBorder(),
-                      ),
+                      label: 'Email',
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -95,27 +86,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 20.h),
                   Card(
-                    child: TextFormField(
-                      style: TextStyle(color: touchesColor),
-                      obscureText: _showpass,
-                      obscuringCharacter: '*',
+                    child: myTextField(
+                      obscure: _showpass,
                       controller: _passwordController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
-                        labelText: 'password',
-                        labelStyle: TextStyle(color: touchesColor),
-                        border: OutlineInputBorder(),
-                        suffix: IconButton(
-                          padding: EdgeInsets.all(0).r,
-                          iconSize: 20.sp,
-                          onPressed: () {
-                            setState(() {
-                              _showpass = !_showpass;
-                            });
-                          },
-                          icon: Icon(
-                            _showpass ? Icons.visibility : Icons.visibility_off,
-                          ),
+                      label: 'password',
+                      suffix: IconButton(
+                        padding: EdgeInsets.all(0).r,
+                        iconSize: 20.sp,
+                        onPressed: () {
+                          setState(() {
+                            _showpass = !_showpass;
+                          });
+                        },
+                        icon: Icon(
+                          _showpass ? Icons.visibility : Icons.visibility_off,
                         ),
                       ),
                       keyboardType: TextInputType.visiblePassword,

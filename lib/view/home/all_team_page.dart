@@ -1,5 +1,6 @@
 import 'package:team_task_manager/view/index.dart';
 
+// Main page widget for displaying all teams
 class AllTeamsPage extends StatefulWidget {
   const AllTeamsPage({super.key});
 
@@ -8,52 +9,61 @@ class AllTeamsPage extends StatefulWidget {
 }
 
 class _AllTeamsPageState extends State<AllTeamsPage> {
+  // Reference to the 'teams' collection in Firestore
   final CollectionReference team = FirebaseFirestore.instance.collection(
     'teams',
   );
-  getToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({'fcm_token': token});
-    log('$token');
-  }
+
+  // Uncomment and use this function to get and update FCM token for the user
+  // getToken() async {
+  //   String? token = await FirebaseMessaging.instance.getToken();
+  //   await FirebaseFirestore.instance
+  //       .collection('Users')
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .update({'fcm_token': token});
+  //   log('$token');
+  // }
 
   @override
-  void initState() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      getToken();
-    }
-    super.initState();
-  }
-
+  // Uncomment to initialize token fetching on widget init
+  // void initState() {
+  //   if (FirebaseAuth.instance.currentUser != null) {
+  //     getToken();
+  //   }
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: buildDrawer(context),
+      drawer: buildDrawer(context), // App drawer
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Teams', style: TextStyle(fontSize: 30)),
       ),
 
+      // Listen to authentication state changes
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, userSnapshot) {
-          if (!userSnapshot.hasData || userSnapshot.data == null) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            // Show loading indicator while waiting for auth state
             return Center(
               child: CircularProgressIndicator(backgroundColor: thirdColor),
             );
           }
-          final user = userSnapshot.data!;
+          // Listen to teams where the current user is a member
           return StreamBuilder<QuerySnapshot>(
             stream:
                 FirebaseFirestore.instance
                     .collection('teams')
-                    .where('members_list', arrayContains: user.uid)
+                    .where(
+                      'members_list',
+                      arrayContains: userSnapshot.data?.uid,
+                    )
                     .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
+                // Show loading indicator while waiting for teams data
                 return Center(
                   child: CircularProgressIndicator(
                     backgroundColor: touchesColor,
@@ -61,6 +71,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                 );
               }
               if (snapshot.data!.docs.isEmpty) {
+                // Show message if no teams are found
                 return Center(
                   child: SizedBox(
                     height: .2.sh,
@@ -68,7 +79,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                     child: ListTile(
                       tileColor: touchesColor.withAlpha(0),
                       title: Text(
-                        " Create a Team and Add some members",
+                        " Create a Team or more ",
                         style: TextStyle(
                           color: touchesColor.withAlpha(70),
                           fontSize: 25,
@@ -79,6 +90,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                 );
               }
               final teams = snapshot.data!.docs;
+              // Display list of teams
               return Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: ListView.builder(
@@ -97,13 +109,16 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                               final String currentUser =
                                   FirebaseAuth.instance.currentUser!.uid;
 
+                              // Show dialog for Edit/Delete options
                               Get.defaultDialog(
-                                title: "Alert",
+                                title: "",
                                 content: Text("What you want to do??"),
                                 textConfirm: 'Edit',
                                 onConfirm: () {
+                                  // Only team leader can edit
                                   if (teams[index]['createdBy'] ==
                                       currentUser) {
+                                    Get.back();
                                     Get.to(
                                       EditTeam(
                                         id: teams[index].id,
@@ -112,6 +127,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                                       ),
                                     );
                                   } else {
+                                    Get.back();
                                     Get.defaultDialog(
                                       title: "Sorry",
                                       content: Text(
@@ -122,6 +138,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                                 },
                                 cancel: ElevatedButton(
                                   onPressed: () {
+                                    // Only team leader can delete
                                     if (teams[index]['createdBy'] ==
                                         currentUser) {
                                       Get.back();
@@ -135,6 +152,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                                             ),
                                           );
                                     } else {
+                                      Get.back();
                                       Get.defaultDialog(
                                         title: "Sorry",
                                         content: Text(
@@ -147,9 +165,9 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
                                 ),
                               );
                             },
-
                             icon: Icon(Icons.more_vert),
                           ),
+                          // Navigate to Members page on tap
                           onTap: () {
                             Get.to(
                               () => Members(
@@ -170,6 +188,7 @@ class _AllTeamsPageState extends State<AllTeamsPage> {
         },
       ),
 
+      // Button to add a new team
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed('/add_team');

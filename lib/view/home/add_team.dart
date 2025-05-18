@@ -3,27 +3,29 @@ import 'package:team_task_manager/view/index.dart';
 class AddTaskPage extends StatelessWidget {
   AddTaskPage({super.key});
 
+  // Controllers for form fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // Function to create a new team in Firestore
   Future<void> createTeam() async {
-    // Call the user's CollectionReference to add a new user
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
       final teamRef = FirebaseFirestore.instance.collection('teams').doc();
 
+      // Set team data in Firestore
       await teamRef.set({
         'title': _nameController.text,
-        'description': _descriptionController.text, // John Doe
-        'createdBy': user.uid, // Stokes and Sons
+        'description': _descriptionController.text,
+        'createdBy': user.uid,
         'members_list': FieldValue.arrayUnion([user.uid]),
         'members_name': user.displayName,
-
-        'createdAt': FieldValue.serverTimestamp(), // Stokes and Sons
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
+      // Add the creator as a member with leader role
       await teamRef
           .collection("members")
           .doc(user.uid)
@@ -44,6 +46,7 @@ class AddTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Dismiss keyboard when tapping outside
       onTap: () {
         FocusScope.of(context).unfocus();
       },
@@ -56,14 +59,11 @@ class AddTaskPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Team Name input
                 Card(
-                  child: TextFormField(
-                    style: TextStyle(color: touchesColor),
+                  child: myTextField(
                     controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Team Name',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'Team Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a title';
@@ -73,15 +73,13 @@ class AddTaskPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16.h),
+                // Team Description input
                 Card(
-                  child: TextFormField(
-                    style: TextStyle(color: touchesColor),
+                  child: myTextField(
                     controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Team Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 4,
+                    label: 'Team Description',
+
+                    maxLines: 6,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a description';
@@ -91,14 +89,13 @@ class AddTaskPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16.h),
+                // Add button
                 customButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Handle task submission logic here
+                      // If form is valid, create the team
                       final title = _nameController.text;
                       final description = _descriptionController.text;
-
-                      // Example: Print to console
 
                       createTeam();
                       log('Task Added: $title, $description');
@@ -107,7 +104,7 @@ class AddTaskPage extends StatelessWidget {
                       _nameController.clear();
                       _descriptionController.clear();
                       Get.offNamed('/teams');
-                      // Optionally, navigate back or show a success message
+                      // Show success message
                       Get.snackbar("", "Team added successfully!");
                     }
                   },

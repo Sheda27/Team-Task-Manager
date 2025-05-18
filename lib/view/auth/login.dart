@@ -1,42 +1,10 @@
 import 'package:team_task_manager/view/index.dart';
 
-Future signInWithGoogle() async {
-  // Trigger the authentication flow
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  if (googleUser == null) {
-    return;
-  }
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth.accessToken,
-    idToken: googleAuth.idToken,
-  );
-
-  // Once signed in, return the UserCredential
-  final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
-  final user = userCred.user!;
-  final userDoc = FirebaseFirestore.instance.collection('Users').doc(user.uid);
-  final docSnapsot = await userDoc.get();
-  if (!docSnapsot.exists) {
-    await userDoc.set({
-      'user_name': user.displayName,
-      'user_email': user.email,
-      'user_role': 'member',
-      'profile_image': user.photoURL,
-      'ownerId': user.uid,
-      'fcm_token': '',
-      'creatdAt': FieldValue.serverTimestamp(),
-    });
-  }
-  await Get.offNamed('/teams');
-}
-
+// Initialize controllers for sign-in and text fields
+SignInController signInController = Get.put(SignInController());
 TextEditingController email = TextEditingController();
 TextEditingController pass = TextEditingController();
-bool _showpass = true;
+bool _showpass = true; // Controls password visibility
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -46,11 +14,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey(); // Form key for validation
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // Dismiss keyboard when tapping outside input fields
       onTap: () {
         FocusScope.of(context).unfocus();
       },
@@ -62,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: ListView(
               children: [
+                // Welcome text
                 SizedBox(
                   child: Text(
                     "Welcome...",
@@ -73,21 +43,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 16.h),
+                // Sign-in image
                 SizedBox(
                   height: .3.sh,
                   width: 1.sw,
                   child: Image(image: AssetImage("images/sign-in.png")),
                 ),
-
                 SizedBox(height: 30.h),
+                // Email input field
                 Card(
-                  child: TextFormField(
-                    style: TextStyle(color: touchesColor),
+                  child: myTextField(
                     controller: email,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'E-mail',
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -101,44 +68,40 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 16.h),
+                // Password input field with show/hide toggle
                 Card(
-                  child: TextFormField(
-                    style: TextStyle(color: touchesColor),
-
+                  child: myTextField(
                     controller: pass,
-                    obscuringCharacter: '*',
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      contentPadding: EdgeInsets.fromLTRB(8, 5, 5, 5).r,
-                      border: OutlineInputBorder(),
-                      suffix: IconButton(
-                        padding: EdgeInsets.all(0).r,
-                        iconSize: 20.sp,
-                        onPressed: () {
-                          setState(() {
-                            _showpass = !_showpass;
-                          });
-                        },
-                        icon: Icon(
-                          _showpass ? Icons.visibility : Icons.visibility_off,
-                        ),
+                    label: 'Password',
+                    suffix: IconButton(
+                      padding: EdgeInsets.all(0).r,
+                      iconSize: 20.sp,
+                      onPressed: () {
+                        setState(() {
+                          _showpass = !_showpass; // Toggle password visibility
+                        });
+                      },
+                      icon: Icon(
+                        _showpass ? Icons.visibility : Icons.visibility_off,
                       ),
                     ),
-                    obscureText: _showpass,
+
+                    obscure: _showpass,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please Enter Your Password';
                       }
-
                       return null;
                     },
                   ),
                 ),
+                // Forgot password button
                 SizedBox(
                   height: 30.h,
                   child: TextButton(
                     onPressed: () {
                       if (email.text != "") {
+                        // Show dialog to send password reset email
                         Get.defaultDialog(
                           title: 'Press The Button to Get Reset E-mail',
                           content: customButton(
@@ -154,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
                                 if (e.code == 'user-not-found') {
                                   Get.snackbar(
                                     "User Not Found",
-
                                     "No user found for that email.",
                                   );
                                   log(
@@ -163,18 +125,17 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               }
                             },
-
                             buttonText: 'Send ',
                           ),
                         );
                       } else {
+                        // Warn if email is empty
                         Get.defaultDialog(
                           title: "Warning",
                           content: Text("Please Enter your E-mail First"),
                         );
                       }
                     },
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -186,54 +147,40 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+                // Email sign-in button
                 SignInButton(
                   buttonType: ButtonType.mail,
                   onPressed: () async {
-                    // Handle login logic here
-
+                    // Validate form and attempt sign-in
                     if (_formKey.currentState!.validate()) {
                       try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email.text,
-                          password: pass.text,
-                        );
-                        Get.offNamed('/teams');
-                        email.clear();
-                        pass.clear();
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          Get.snackbar(
-                            "User Not Found ",
-                            "Please Register Try to Register",
-                          );
-                          log('No user found for that email.');
-                        } else if (e.code == 'wrong-password') {
-                          Get.snackbar(
-                            "User Not Found ",
-                            "Please Try to Register",
-                          );
-                          log('Wrong password provided for that user.');
-                        }
+                        UserCredential userCredential = await signInController
+                            .signIn(email.text, pass.text);
+                        if (userCredential.user!.emailVerified) {}
+                      } catch (e) {
+                        Get.snackbar("", e.toString());
+                        log('$e');
                       }
                     }
                   },
                 ),
                 SizedBox(height: 16.h),
-
+                // Google sign-in button
                 SignInButton(
                   buttonType: ButtonType.google,
                   onPressed: () async {
-                    signInWithGoogle();
+                    await signInController.signInWithGoogle();
                   },
                 ),
                 SizedBox(height: 16.h),
+                // Sign up navigation
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        // Navigate to registration page
+                        // Navigate to registration page and clear fields
                         Get.offNamed('/sign-up');
                         email.clear();
                         pass.clear();
